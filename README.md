@@ -20,7 +20,7 @@ A GPU-accelerated image processing application that applies color filters such a
 
 # Example
 ![input photo](https://github.com/adanda23/CUDAImageFiltering/tree/main/resources/example.jpg)
-![output photo](https://github.com/adanda23/CUDAImageFiltering/tree/main/resources/example.jpg)
+![output photo](https://github.com/adanda23/CUDAImageFiltering/tree/main/resources/output.jpg)
 ```bash
 $ ./image_filter 
 Select a filter:
