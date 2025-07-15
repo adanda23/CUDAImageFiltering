@@ -19,9 +19,13 @@ A GPU-accelerated image processing application that applies color filters such a
 - run ```./image_filter```
 
 # Example
-![input photo](https://github.com/adanda23/CUDAImageFiltering/tree/main/resources/example.jpg)
-![output photo](https://github.com/adanda23/CUDAImageFiltering/tree/main/resources/output.jpg)
-```bash
+<div style="display: flex; gap: 10px;">
+  <img src="/resources/example.jpg" width="220" height="240" />
+  <img src="/resources/output.jpg" width="220" height="240" />
+</div>
+
+
+```
 $ ./image_filter 
 Select a filter:
 - grayscale
