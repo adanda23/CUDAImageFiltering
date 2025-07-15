@@ -87,3 +87,22 @@ void boxBlurCUDA(unsigned char* input, unsigned char* output, int width, int hei
     dim3 blocks((width + 15) / 16, (height + 15) / 16);
     boxBlurKernel<<<blocks, threads>>>(input, output, width, height);
 }
+
+// invert colors filter
+__global__ void invertKernel(unsigned char* input, unsigned char* output, int width, int height) {
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    if (x < width && y < height) {
+        int i = (y * width + x) * 3;
+        output[i] = 255 - input[i];         
+        output[i + 1] = 255 - input[i + 1]; 
+        output[i + 2] = 255 - input[i + 2]; 
+    }
+}
+
+void invertCUDA(unsigned char* input, unsigned char* output, int width, int height) {
+    dim3 threads(16, 16);
+    dim3 blocks((width + 15) / 16, (height + 15) / 16);
+    invertKernel<<<blocks, threads>>>(input, output, width, height);
+}

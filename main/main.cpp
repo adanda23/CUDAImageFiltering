@@ -7,6 +7,7 @@
 void grayscaleCUDA(unsigned char* input, unsigned char* output, int width, int height);
 void sepiaCUDA(unsigned char* input, unsigned char* output, int width, int height);
 void boxBlurCUDA(unsigned char* input, unsigned char* output, int width, int height);
+void invertCUDA(unsigned char* input, unsigned char* output, int width, int height);
 
 int main() {
     cv::Mat input = cv::imread("example.jpg", cv::IMREAD_COLOR);
@@ -29,6 +30,8 @@ int main() {
     std::cout << "- grayscale\n";
     std::cout << "- sepia\n";
     std::cout << "- boxblur\n";
+    std::cout << "- invert\n";
+
 
     std::cin >> filter;
 
@@ -49,7 +52,10 @@ int main() {
     else if (filter == "boxblur") {
         boxBlurCUDA(d_input, d_output, input.cols, input.rows);
     }
-    
+    else if (filter == "invert") {
+        invertCUDA(d_input, d_output, input.cols, input.rows);
+    }
+
     // Stop recording time
     cudaEventRecord(stop);
     cudaEventSynchronize(stop);
