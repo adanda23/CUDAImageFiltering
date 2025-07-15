@@ -32,77 +32,35 @@ int main() {
 
     std::cin >> filter;
 
-    if (filter == "grayscale")
-    {
-        cudaEvent_t start, stop;
-        cudaEventCreate(&start);
-        cudaEventCreate(&stop);
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
 
-        // Start recording time
-        cudaEventRecord(start);
+    // Start recording time
+    cudaEventRecord(start);
 
+    if (filter == "grayscale") {
         grayscaleCUDA(d_input, d_output, input.cols, input.rows);
-
-        // Stop recording time
-        cudaEventRecord(stop);
-        cudaEventSynchronize(stop);
-
-        // Calculate elapsed time in milliseconds
-        float milliseconds = 0;
-        cudaEventElapsedTime(&milliseconds, start, stop);
-        std::cout << "CUDA kernel execution time: " << milliseconds << " ms" << std::endl;
-
-        cudaEventDestroy(start);
-        cudaEventDestroy(stop);
     }
-
-    if (filter == "sepia")
+    else if (filter == "sepia")
     {
-        cudaEvent_t start, stop;
-        cudaEventCreate(&start);
-        cudaEventCreate(&stop);
-
-        // Start recording time
-        cudaEventRecord(start);
-
         sepiaCUDA(d_input, d_output, input.cols, input.rows);
-
-        // Stop recording time
-        cudaEventRecord(stop);
-        cudaEventSynchronize(stop);
-
-        // Calculate elapsed time in milliseconds
-        float milliseconds = 0;
-        cudaEventElapsedTime(&milliseconds, start, stop);
-        std::cout << "CUDA kernel execution time: " << milliseconds << " ms" << std::endl;
-
-        cudaEventDestroy(start);
-        cudaEventDestroy(stop);
     }
-
-    if (filter == "boxblur")
-    {
-        cudaEvent_t start, stop;
-        cudaEventCreate(&start);
-        cudaEventCreate(&stop);
-
-        // Start recording time
-        cudaEventRecord(start);
-
+    else if (filter == "boxblur") {
         boxBlurCUDA(d_input, d_output, input.cols, input.rows);
-
-        // Stop recording time
-        cudaEventRecord(stop);
-        cudaEventSynchronize(stop);
-
-        // Calculate elapsed time in milliseconds
-        float milliseconds = 0;
-        cudaEventElapsedTime(&milliseconds, start, stop);
-        std::cout << "CUDA kernel execution time: " << milliseconds << " ms" << std::endl;
-
-        cudaEventDestroy(start);
-        cudaEventDestroy(stop);
     }
+    
+    // Stop recording time
+    cudaEventRecord(stop);
+    cudaEventSynchronize(stop);
+
+    // Calculate elapsed time in milliseconds
+    float milliseconds = 0;
+    cudaEventElapsedTime(&milliseconds, start, stop);
+    std::cout << "CUDA kernel execution time: " << milliseconds << " ms" << std::endl;
+
+    cudaEventDestroy(start);
+    cudaEventDestroy(stop);
         
     //Write back to host
     cv::Mat output(input.size(), input.type());
@@ -112,7 +70,6 @@ int main() {
     //Freeing the memory
     cudaFree(d_input);
     cudaFree(d_output);
-
 
     return 0;
 }
