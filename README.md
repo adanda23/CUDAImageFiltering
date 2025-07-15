@@ -17,3 +17,17 @@ A GPU-accelerated image processing application that applies color filters such a
 - run ```make```
 - Add jpg into the directory (default name should be example.jpg)
 - run ```./image_filter```
+
+# Example
+![input photo](https://github.com/adanda23/CUDAImageFiltering/tree/main/resources/example.jpg)
+![output photo](https://github.com/adanda23/CUDAImageFiltering/tree/main/resources/example.jpg)
+```bash
+$ ./image_filter 
+Select a filter:
+- grayscale
+- sepia
+- boxblur
+- invert
+invert
+CUDA kernel execution time: 2.71523 ms
+```
