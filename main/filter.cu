@@ -45,3 +45,45 @@ void sepiaCUDA(unsigned char* input, unsigned char* output, int width, int heigh
     dim3 blocks((width + 15) / 16, (height + 15) / 16);
     sepiaKernal<<<blocks, threads>>>(input, output, width, height);
 }
+
+// box blur filter
+__global__ void boxBlurKernel(unsigned char* input, unsigned char* output, int width, int height) {
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    if (x < width && y < height) {
+        int i = (y * width + x) * 3;
+        float r = 0.0f, g = 0.0f, b = 0.0f;
+        int count = 0;
+
+        // 3x3 kernel
+        for (int dy = -2; dy <= 2; dy++) {
+            for (int dx = -2; dx <= 2; dx++) {
+                int nx = x + dx;
+                int ny = y + dy;
+                if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                    int ni = (ny * width + nx) * 3;
+                    r += input[ni];
+                    g += input[ni + 1];
+                    b += input[ni + 2];
+                    count++;
+                }
+            }
+        }
+
+        r /= count;
+        g /= count;
+        b /= count;
+
+        output[i]     = (r > 255.0f) ? 255 : (unsigned char)r;
+        output[i + 1] = (g > 255.0f) ? 255 : (unsigned char)g;
+        output[i + 2] = (b > 255.0f) ? 255 : (unsigned char)b;
+    }
+}
+
+
+void boxBlurCUDA(unsigned char* input, unsigned char* output, int width, int height) {
+    dim3 threads(16, 16);
+    dim3 blocks((width + 15) / 16, (height + 15) / 16);
+    boxBlurKernel<<<blocks, threads>>>(input, output, width, height);
+}

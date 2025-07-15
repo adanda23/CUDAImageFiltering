@@ -6,7 +6,7 @@
 // Defining grayscale filter
 void grayscaleCUDA(unsigned char* input, unsigned char* output, int width, int height);
 void sepiaCUDA(unsigned char* input, unsigned char* output, int width, int height);
-
+void boxBlurCUDA(unsigned char* input, unsigned char* output, int width, int height);
 
 int main() {
     cv::Mat input = cv::imread("example.jpg", cv::IMREAD_COLOR);
@@ -25,7 +25,11 @@ int main() {
     cudaMemcpy(d_input, input.data, imgSize, cudaMemcpyHostToDevice);
 
     std::string filter;
-    std::cout << "Select a filter: ";
+    std::cout << "Select a filter:\n";
+    std::cout << "- grayscale\n";
+    std::cout << "- sepia\n";
+    std::cout << "- boxblur\n";
+
     std::cin >> filter;
 
     if (filter == "grayscale")
@@ -62,6 +66,30 @@ int main() {
         cudaEventRecord(start);
 
         sepiaCUDA(d_input, d_output, input.cols, input.rows);
+
+        // Stop recording time
+        cudaEventRecord(stop);
+        cudaEventSynchronize(stop);
+
+        // Calculate elapsed time in milliseconds
+        float milliseconds = 0;
+        cudaEventElapsedTime(&milliseconds, start, stop);
+        std::cout << "CUDA kernel execution time: " << milliseconds << " ms" << std::endl;
+
+        cudaEventDestroy(start);
+        cudaEventDestroy(stop);
+    }
+
+    if (filter == "boxblur")
+    {
+        cudaEvent_t start, stop;
+        cudaEventCreate(&start);
+        cudaEventCreate(&stop);
+
+        // Start recording time
+        cudaEventRecord(start);
+
+        boxBlurCUDA(d_input, d_output, input.cols, input.rows);
 
         // Stop recording time
         cudaEventRecord(stop);
